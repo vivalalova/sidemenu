@@ -7,33 +7,35 @@
 
 import SwiftUI
 
-struct SideMenu: View {
+struct SideMenu<Content: View>: View {
     private var width: CGFloat { 300 }
     @Binding var x: CGFloat
 
-    var body: some View {
-        UITableView.appearance().separatorStyle = .none
-        UITableView.appearance().tableFooterView = UIView()
+    var content: (() -> Void) -> Content
 
-        return ZStack {
-            Button("", action: self.close)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(self.backGround)
-                .edgesIgnoringSafeArea(.all)
-                .onTapGesture(perform: self.close)
-
-            HStack {
-                SideMenuContent(changeAccount: {})
-                    .frame(width: self.width)
-                    .offset(x: x > -self.width ? x : x - 20)
-                    .gesture(drag)
-
-                Spacer()
-            }
-        }
+    init(x: Binding<CGFloat>, @ViewBuilder content: @escaping (() -> Void) -> Content) {
+        _x = x
+        self.content = content
     }
 
-    var backGround: Color {
+    var body: some View {
+        self.backGroundColor
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .edgesIgnoringSafeArea(.all)
+            .onTapGesture(perform: self.close)
+            .overlay(alignment: .leading) {
+                GeometryReader { proxy in
+                    let width = proxy.size.width
+
+                    self.content(self.close)
+                        .frame(maxWidth: width - 100)
+                        .offset(x: x > -width ? x : x + 20)
+                        .gesture(drag)
+                }
+            }
+    }
+
+    var backGroundColor: Color {
         let opacity = Double((self.x + self.width) / self.width) * 0.4
         return Color(Color.RGBColorSpace.sRGB, white: 0, opacity: opacity)
     }
@@ -64,77 +66,5 @@ struct SideMenu: View {
     func close() {
         print("close")
         withAnimation { self.x = -self.width }
-    }
-}
-
-struct SideMenuContent: View {
-    typealias Callback = () -> Void
-
-    @State var hasCompany: Bool = false
-    var changeAccount: Callback
-
-    var imageViewSize: CGFloat = 120.0
-
-    var body: some View {
-        VStack {
-            List {
-                VStack(alignment: .leading) {
-                    Image(systemName: "person.fill")
-                        .resizable(resizingMode: Image.ResizingMode.stretch)
-                        .frame(width: imageViewSize, height: imageViewSize)
-                        .cornerRadius(imageViewSize / 2)
-
-                    Text("User Name")
-                        .font(.title)
-
-                    if hasCompany {
-                        Button(action: self.changeAccount) {
-                            Text("0").foregroundColor(Color.blue)
-                        }
-                    }
-                }
-
-                SideMenuRow(title: "1", action: {})
-                SideMenuRow(title: "2", action: {})
-                SideMenuRow(title: "3", action: {})
-                SideMenuRow(title: "4", action: {})
-                SideMenuRow(title: "5", action: {})
-                SideMenuRow(title: "登出", action: {})
-            }
-
-            Spacer()
-        }
-        .background(Color.white)
-    }
-}
-
-struct SideMenuRow: View {
-    typealias Callback = () -> Void
-
-    var title: String
-    var action: Callback
-
-    var body: some View {
-        Button(action: self.action) {
-            Text(self.title)
-                .font(.headline)
-                .fontWeight(.regular)
-                .padding(.vertical)
-        }
-    }
-}
-
-struct SideMenu_Previews: PreviewProvider {
-    @State static var x: CGFloat = -300
-
-    static var previews: some View {
-        ZStack {
-            Button("hello world2") {
-                withAnimation { self.x = 0 }
-            }
-
-            SideMenu(x: $x)
-                .edgesIgnoringSafeArea(.bottom)
-        }
     }
 }

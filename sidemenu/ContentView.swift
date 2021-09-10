@@ -16,8 +16,15 @@ struct ContentView: View {
                 withAnimation { self.x = 0 }
             }
 
-            SideMenu(x: $x)
-                .edgesIgnoringSafeArea(.bottom)
+            SideMenu(x: $x) { _ in
+
+                Color.red
+                    .frame(width: 120)
+
+//                Button("close") {
+//                    close()
+//                }
+            }.edgesIgnoringSafeArea(.all)
         }
     }
 }
