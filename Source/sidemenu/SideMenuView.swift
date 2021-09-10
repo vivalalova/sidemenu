@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct SideMenu<Content: View>: View {
-    private var width: CGFloat { 300 }
     @Binding var x: CGFloat
 
     var content: (() -> Void) -> Content
 
     init(x: Binding<CGFloat>, @ViewBuilder content: @escaping (() -> Void) -> Content) {
-        _x = x
+        self._x = x
         self.content = content
     }
 
@@ -34,6 +33,10 @@ struct SideMenu<Content: View>: View {
                 }
             }
     }
+}
+
+extension SideMenu {
+    var width: CGFloat { 300 }
 
     var backGroundColor: Color {
         let opacity = Double((self.x + self.width) / self.width) * 0.4
