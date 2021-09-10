@@ -7,18 +7,6 @@
 
 import SwiftUI
 
-extension View {
-    func sidemenu<Content: View>(x: Binding<CGFloat>, @ViewBuilder content: @escaping (_ close: () -> Void) -> Content) -> some View {
-        ZStack {
-            self
-
-            SideMenu(x: x) { close in
-                content(close)
-            }.edgesIgnoringSafeArea(.all)
-        }
-    }
-}
-
 struct ContentView: View {
     @State var x: CGFloat = -300
 
@@ -26,10 +14,13 @@ struct ContentView: View {
         Button("hello world2") {
             withAnimation { self.x = 0 }
         }
-        .sidemenu(x: $x) { _ in
+        .sidemenu(x: $x) { close in
             Color.red
                 .frame(width: 120)
-        }
+                .onTapGesture {
+                    close()
+                }
+        }        
     }
 }
 

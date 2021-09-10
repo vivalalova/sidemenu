@@ -7,12 +7,25 @@
 
 import SwiftUI
 
+extension View {
+    func sidemenu<Content: View>(x: Binding<CGFloat>, @ViewBuilder content: @escaping SideMenu<Content>.Builder) -> some View {
+        ZStack {
+            self
+
+            SideMenu(x: x) { close in
+                content(close)
+            }.edgesIgnoringSafeArea(.all)
+        }
+    }
+}
+
 struct SideMenu<Content: View>: View {
     @Binding var x: CGFloat
 
-    var content: (() -> Void) -> Content
+    typealias Builder = (_ close: @escaping () -> Void) -> Content
+    var content: Builder
 
-    init(x: Binding<CGFloat>, @ViewBuilder content: @escaping (() -> Void) -> Content) {
+    init(x: Binding<CGFloat>, @ViewBuilder content: @escaping Builder) {
         self._x = x
         self.content = content
     }
