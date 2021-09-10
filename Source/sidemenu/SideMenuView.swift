@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension View {
-    func sidemenu<Content: View>(x: Binding<CGFloat>, @ViewBuilder content: @escaping SideMenu<Content>.Builder) -> some View {
+    func sidemenu<Content: View>(x: Binding<CGFloat>, @ViewBuilder content: @escaping SideMenu<Content>.ContentBuilder) -> some View {
         ZStack {
             self
 
@@ -22,10 +22,10 @@ extension View {
 struct SideMenu<Content: View>: View {
     @Binding var x: CGFloat
 
-    typealias Builder = (_ close: @escaping () -> Void) -> Content
-    var content: Builder
+    typealias ContentBuilder = (_ close: @escaping () -> Void) -> Content
+    var content: ContentBuilder
 
-    init(x: Binding<CGFloat>, @ViewBuilder content: @escaping Builder) {
+    init(x: Binding<CGFloat>, @ViewBuilder content: @escaping ContentBuilder) {
         self._x = x
         self.content = content
     }
