@@ -22,6 +22,8 @@ extension View {
 struct SideMenu<Content: View>: View {
     @Binding var x: CGFloat
 
+//    @Binding var isPresented: Bool
+
     typealias ContentBuilder = (_ close: @escaping () -> Void) -> Content
     var content: ContentBuilder
 
@@ -82,5 +84,30 @@ extension SideMenu {
     func close() {
         print("close")
         withAnimation { self.x = -self.width }
+    }
+}
+
+import Combine
+
+extension SideMenu {
+    class ViewModel: ObservableObject {
+        private var bag = Set<AnyCancellable>()
+
+        @Published var x: CGFloat
+        @Published var isPresented: Bool
+
+        init(x: Binding<CGFloat>, isPresented: Binding<Bool>) {
+            self.x = x.wrappedValue
+            self.isPresented = isPresented.wrappedValue
+
+            $x.eraseToAnyPublisher()
+                .assign(to: \.x, on: self)
+                .store(in: &self.bag)
+            
+            $isPresented.eraseToAnyPublisher()
+                .assign(to: \.isPresented, on: self)
+                .store(in: &self.bag)
+
+        }
     }
 }
