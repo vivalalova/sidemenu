@@ -8,9 +8,17 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var x: CGFloat = -300
+
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+        ZStack {
+            Button("hello world2") {
+                withAnimation { self.x = 0 }
+            }
+
+            SideMenu(x: $x)
+                .edgesIgnoringSafeArea(.bottom)
+        }
     }
 }
 
