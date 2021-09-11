@@ -5,6 +5,7 @@
 //  Created by Lova on 2021/9/11.
 //
 
+import SideMenuView
 import SwiftUI
 
 struct ContentView: View {
@@ -20,7 +21,7 @@ struct ContentView: View {
                 .onTapGesture {
                     close()
                 }
-        }        
+        }
     }
 }
 

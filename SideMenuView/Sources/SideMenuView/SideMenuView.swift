@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+public
 extension View {
     func sidemenu<Content: View>(x: Binding<CGFloat>, @ViewBuilder content: @escaping SideMenu<Content>.ContentBuilder) -> some View {
         ZStack {
@@ -19,12 +20,15 @@ extension View {
     }
 }
 
+public
 struct SideMenu<Content: View>: View {
     @Binding var x: CGFloat
 
 //    @Binding var isPresented: Bool
 
+    public
     typealias ContentBuilder = (_ close: @escaping () -> Void) -> Content
+
     var content: ContentBuilder
 
     init(x: Binding<CGFloat>, @ViewBuilder content: @escaping ContentBuilder) {
@@ -32,6 +36,7 @@ struct SideMenu<Content: View>: View {
         self.content = content
     }
 
+    public
     var body: some View {
         self.backGroundColor
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -103,11 +108,10 @@ extension SideMenu {
             $x.eraseToAnyPublisher()
                 .assign(to: \.x, on: self)
                 .store(in: &self.bag)
-            
+
             $isPresented.eraseToAnyPublisher()
                 .assign(to: \.isPresented, on: self)
                 .store(in: &self.bag)
-
         }
     }
 }
