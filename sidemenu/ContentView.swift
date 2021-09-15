@@ -9,17 +9,19 @@ import SideMenuView
 import SwiftUI
 
 struct ContentView: View {
-    @State var x: CGFloat = -300
+    @State var isPresented: Bool = true
 
     var body: some View {
         Button("hello world2") {
-            withAnimation { self.x = 0 }
+//            withAnimation {
+                self.isPresented.toggle()
+//            }
         }
-        .sidemenu(x: $x) { close in
+        .sidemenu(isPresented: $isPresented) {
             Color.red
                 .frame(width: 120)
                 .onTapGesture {
-                    close()
+                    self.isPresented = false
                 }
         }
     }

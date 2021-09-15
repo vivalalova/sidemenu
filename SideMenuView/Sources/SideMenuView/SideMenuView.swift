@@ -9,12 +9,12 @@ import SwiftUI
 
 public
 extension View {
-    func sidemenu<Content: View>(x: Binding<CGFloat>, @ViewBuilder content: @escaping SideMenu<Content>.ContentBuilder) -> some View {
+    func sidemenu<Content: View>(isPresented: Binding<Bool>, @ViewBuilder content: @escaping SideMenu<Content>.ContentBuilder) -> some View {
         ZStack {
             self
 
-            SideMenu(x: x) { close in
-                content(close)
+            SideMenu(isPresented: isPresented) {
+                content()
             }.edgesIgnoringSafeArea(.all)
         }
     }
@@ -22,19 +22,14 @@ extension View {
 
 public
 struct SideMenu<Content: View>: View {
-    @Binding var x: CGFloat
+    @State var x: CGFloat = -500
 
-//    @Binding var isPresented: Bool
+    @Binding var isPresented: Bool
 
     public
-    typealias ContentBuilder = (_ close: @escaping () -> Void) -> Content
+    typealias ContentBuilder = () -> Content
 
     var content: ContentBuilder
-
-    init(x: Binding<CGFloat>, @ViewBuilder content: @escaping ContentBuilder) {
-        self._x = x
-        self.content = content
-    }
 
     public
     var body: some View {
@@ -46,7 +41,7 @@ struct SideMenu<Content: View>: View {
                 GeometryReader { proxy in
                     let width = proxy.size.width
 
-                    self.content(self.close)
+                    self.content()
                         .frame(maxWidth: width - 100)
                         .offset(x: x > -width ? x : x + 20)
                         .gesture(drag)
